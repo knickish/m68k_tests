@@ -1,0 +1,6 @@
+[sid-m68k-sbuild]
+description=Debian sid chroot for m68k
+type=directory
+directory=~/sid-m68k-sbuild
+groups=root,sbuild,buildd
+root-groups=root,sbuild,buildd

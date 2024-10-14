@@ -1,0 +1,78 @@
+version: '3'
+services:
+  m68k_base_service:
+    image: m68k_base
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  m68k_clang_service:
+    depends_on: 
+      - m68k_base_service
+    image: m68k_base
+    volumes: 
+      - ./llvm-project:/root/llvm-project
+      - llvm-install:/usr/local
+    command: ["/bin/bash", "-c", "/m68k-clang-install.sh"]
+
+
+  m68k_compile_service:
+    depends_on:
+      - m68k_clang_service
+    image: m68k_base
+    volumes: 
+      - ./llvm-project:/root/llvm-project
+      - llvm-install:/usr/local
+    # command: ["ls", "/bin"]
+    command: ["/bin/bash", "-c", "/m68k-compile-test.sh"]
+
+  m68k_rust_deps_service:
+    depends_on:
+      - m68k_base_service
+    image: m68k_base
+    volumes: 
+      - ./rust:/root/rust
+      - llvm-install:/usr/local
+    command: ["/bin/bash", "-c", "/m68k-rust-setup.sh"]
+
+  m68k_rust_service:
+    depends_on:
+      - m68k_rust_deps_service
+    image: m68k_base
+    volumes: 
+      - ./rust:/root/rust
+      - llvm-install:/usr/local
+    command: ["/bin/bash", "-c", "/m68k-rust-build.sh"]
+
+  m68k_rust_test_service:
+    depends_on:
+      - m68k_rust_service
+    image: m68k_base
+    volumes: 
+      - ./rust:/root/rust
+      - llvm-install:/usr/local
+      - ./rustc_smoketest:/tmp/rustc_smoketest
+    command: ["/bin/bash", "-c", "/m68k-rustc-smoketest.sh"]
+
+  m68k_outer_bash:
+    depends_on:
+      - m68k_rust_deps_service
+    image: m68k_base
+    volumes: 
+      - ./llvm-project:/root/llvm-project
+      - ./rust:/root/rust
+      - llvm-install:/usr/local
+    command: ["/bin/bash"]
+
+  m68k_inner_bash:
+    depends_on:
+      - m68k_rust_deps_service
+    image: m68k_base
+    volumes: 
+      - ./llvm-project:/root/llvm-project
+      - ./rust:/root/rust
+      - llvm-install:/usr/local
+    command: ["chroot", "/sid-m68k-sbuild", "/bin/bash"]
+
+volumes:
+  llvm-install:

@@ -1,0 +1,8 @@
+# binary default
+deb http://ftp.ports.debian.org/debian-ports/ unstable main
+deb http://incoming.ports.debian.org/buildd/ unstable main
+deb http://ftp.ports.debian.org/debian-ports/ unreleased main
+
+# source
+deb-src ftp://ftp.debian.org/debian/ unstable main
+deb-src http://incoming.debian.org/debian-buildd buildd-unstable main
