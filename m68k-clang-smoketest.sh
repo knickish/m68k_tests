@@ -20,4 +20,11 @@ then
     echo "Exit code was ${EXITCODE}, expected 1";
 fi
 
+./int_size
+EXITCODE=$? 
+if [ $EXITCODE -ne 0 ]; 
+then
+    echo "Exit code was ${EXITCODE}, expected 0";
+fi
+
 exit

@@ -16,7 +16,7 @@ COPY sources.list /sid-m68k-sbuild/etc/apt/
 # install clang and cross-compilation deps
 WORKDIR /
 RUN apt install \
-    cmake ninja-build curl \
+    cmake ninja-build curl libxml2-dev \
     gcc-m68k-linux-gnu g++-m68k-linux-gnu -y
 
 USER root
@@ -41,6 +41,7 @@ RUN chmod +x m68k-rustc-smoketest.sh
 # copy smoketest files
 COPY test_0.c /tmp
 COPY test_1.c /tmp
+COPY test_int_size.c /tmp
 COPY config.toml /tmp
 
 # add the location where llvm will install itself and clang) to PATH
